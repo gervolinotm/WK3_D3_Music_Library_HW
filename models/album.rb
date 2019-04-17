@@ -13,15 +13,16 @@ class Album
   def save()
     sql = "INSERT INTO albums
     (
-      name
+      name,
+      artist_id
     ) VALUES
     (
-      $1
+      $1, $2
     )
     RETURNING id"
-    values = [@name]
+    values = [@name, @artist_id]
     result = SqlRunner.run(sql, values)
-    @id = result[0]['id']
+    @id = result[0]['id'].to_i
   end
 
   def self.all()
