@@ -22,8 +22,10 @@ album3.save()
 
 # artist2.name = 'THE POOCHES'
 # artist2.update()
-album1.delete
-artist1.delete
+# album1.delete
+# artist1.delete
+
+p Album.find(65)
 
 binding.pry
 nil
