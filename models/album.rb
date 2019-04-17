@@ -1,8 +1,10 @@
 require('pg')
+require_relative('artist.rb')
 
 class Album
 
-  attr_reader :name, :id, :artist_id
+  attr_reader :id, :artist_id
+  attr_accessor :name
 
   def initialize(options)
     @name = options['name']
@@ -25,6 +27,35 @@ class Album
     @id = result[0]['id'].to_i
   end
 
+  def list_artist()
+    sql = "SELECT * FROM artists WHERE id = $1;"
+    values = [@artist_id]
+    result = SqlRunner.run(sql, values)
+    artist_info = Artist.new(result[0])
+    return artist_info
+  end
+
+  def delete()
+    sql = "DELETE FROM albums where id = $1"
+    values = [@id]
+    SqlRunner.run(sql, values)
+  end
+
+
+  def update()
+    sql = "
+    UPDATE albums SET (
+      name,
+      artist_id
+    ) =
+    (
+      $1,$2
+    )
+    WHERE id = $3"
+    values = [@name, @artist_id, @id]
+    SqlRunner.run(sql, values)
+  end
+
   def self.all()
     sql = "SELECT * FROM albums"
     results = SqlRunner.run(sql)
@@ -32,7 +63,7 @@ class Album
     return all_albums
   end
 
-  def Album.delete_all
+  def self.delete_all
     sql = "DELETE FROM albums"
     SqlRunner.run(sql)
   end
